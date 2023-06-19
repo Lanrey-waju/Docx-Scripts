@@ -2,7 +2,7 @@ import sys
 from docx import Document
 
 
-def italicize_word_in_docx(file_path, word):
+def edit_word_in_docx(file_path, word, flag):
     # Load the Word document
     doc = Document(file_path)
 
@@ -15,9 +15,12 @@ def italicize_word_in_docx(file_path, word):
                 parts = run.text.split(word)
                 run.text = parts[0]
 
-                # Create a new run for the word and italicize it
-                new_run = paragraph.add_run(word)
-                new_run.italic = True
+                # Create a new run for the word and edit it
+                if flag == "-i":
+                    new_run = paragraph.add_run(word)
+                    new_run.italic = True
+                elif flag == "-c":
+                    new_run = paragraph.add_run(word.capitalize())
 
                 # Insert the new run after the original run
                 paragraph.runs.insert(i + 1, new_run)
@@ -32,14 +35,18 @@ def italicize_word_in_docx(file_path, word):
                     paragraph.runs.insert(i + 2, new_run)
 
     # Save the modified document
-    doc.save('italicized_document.docx')
+    if flag == "-i":
+        doc.save("italicized_document.docx")
+    elif flag == "-c":
+        doc.save("capitalized_document.docx")
 
 
-if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print('Usage: python italicize.py <file_path> <word>')
+if __name__ == "__main__":
+    if len(sys.argv) != 4:
+        print("Usage: python edit.py <file_path> <word> <flag>")
         sys.exit(1)
 
     file_path = sys.argv[1]
     word = sys.argv[2]
-    italicize_word_in_docx(file_path, word)
+    flag = sys.argv[3]
+    edit_word_in_docx(file_path, word, flag)
